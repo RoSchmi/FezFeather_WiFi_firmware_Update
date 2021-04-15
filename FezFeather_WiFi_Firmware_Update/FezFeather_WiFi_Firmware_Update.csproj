@@ -77,6 +77,9 @@
     <Reference Include="GHIElectronics.TinyCLR.Networking, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GHIElectronics.TinyCLR.Networking.2.1.0-preview4\lib\net452\GHIElectronics.TinyCLR.Networking.dll</HintPath>
     </Reference>
+    <Reference Include="GHIElectronics.TinyCLR.Networking.Http, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GHIElectronics.TinyCLR.Networking.Http.2.1.0-preview4\lib\net452\GHIElectronics.TinyCLR.Networking.Http.dll</HintPath>
+    </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Pins, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GHIElectronics.TinyCLR.Pins.2.1.0-preview4\lib\net452\GHIElectronics.TinyCLR.Pins.dll</HintPath>
     </Reference>

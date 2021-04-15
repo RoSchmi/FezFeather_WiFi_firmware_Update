@@ -1,7 +1,13 @@
 ﻿// FezFeather_WiFi_firmware_Update
-// Tool to update firmware of Winc1500 WiFi chip
+// Tool to update firmware of Winc1500 WiFi chip on GHI S
 // Copyright RoSchmi 2021 License Apache v2.0
 
+// For more details see:
+// https://forums.ghielectronics.com/t/problems-to-update-winc1500-firmware-on-fez-feather/23716
+
+
+// Cave: For TinyCLR v2.1.0 preview 4 The length of the WiFi Access point to connect to may have only 3 characters length (e.g. xyz)   !!!!
+// This is going to be fixed in future versions
 
 // Links:
 
@@ -10,7 +16,6 @@
 // -https://ww1.microchip.com/downloads/en/DeviceDoc/ATWINC1500_FW_19_7_3_02NOV2020.zip
 // -https://www.rejetto.com
 
-#define UseWifiModule
 
 using System;
 using System.Collections;
@@ -30,7 +35,7 @@ namespace FezFeather_WiFi_Firmware_Update
     {
         // Set your WiFi Credentials here or store them in the Resources
         static string wiFiSSID_1 = ResourcesSecret.GetString(ResourcesSecret.StringResources.SSID_2);
-        //static string wiFiSSID_1 = "VirtualWiFi";
+        //static string wiFiSSID_1 = "xyz";
 
         static string wiFiKey_1 = ResourcesSecret.GetString(ResourcesSecret.StringResources.Key_2);
         //static string wiFiKey_1 = "MySecretWiFiKey";
@@ -61,9 +66,6 @@ namespace FezFeather_WiFi_Firmware_Update
             // Print System.Clock state
             Debug.WriteLine(Power.GetSystemClock() == SystemClock.Low ? "Using low cpu-frequency" : "Using high cpu-frequency");
 
-
-
-#if UseWifiModule
             SetupWiFi7Click_SC20100_MicroBus1();
 
             // Print the version of the installed WiFi firmware:
@@ -76,9 +78,6 @@ namespace FezFeather_WiFi_Firmware_Update
                 System.Diagnostics.Debug.WriteLine("Supported firmware version #" +
                     (i + 1).ToString() + ": " + GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.Winc15x0Interface.FirmwareSupports[i].ToString());
             }
-#endif
-            
-            
 
             // Signals start of program (for tests)
             for (int i = 0; i < 6; i++)
@@ -95,8 +94,11 @@ namespace FezFeather_WiFi_Firmware_Update
             Debug.WriteLine("New DNS-Server is: " + ipProperties.DnsAddresses[0]);
 
 
+
+
             // Used to verify that fileserver can be reached
             
+            /*
             var s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
             {
@@ -107,7 +109,53 @@ namespace FezFeather_WiFi_Firmware_Update
             {
                 Debug.WriteLine(ex.Message);
             }
+            */
+
+            // Used to verify that a TestFile can be downloaded
+            /*
             
+            var url = "http://192.168.1.24:8000/TestFile.bin";
+
+            int read = 0, total = 0;
+            byte[] result = new byte[512];
+
+            try
+            {
+                using (var req = HttpWebRequest.Create(url) as HttpWebRequest)
+                {
+                    req.KeepAlive = false;
+                    req.ReadWriteTimeout = 2000;
+
+                    using (var res = req.GetResponse() as HttpWebResponse)
+                    {
+                        using (var stream = res.GetResponseStream())
+                        {
+                            do
+                            {
+                                read = stream.Read(result, 0, result.Length);
+                                total += read;
+
+                                Debug.WriteLine("read : " + read);
+                                Debug.WriteLine("total : " + total);
+
+                                String page = "";
+
+                                page = new String(System.Text.Encoding.UTF8.GetChars
+                                    (result, 0, read));
+
+                                Debug.WriteLine("Response : " + page);
+                            }
+
+                            while (read != 0);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+            */
+
 
             Debug.WriteLine("\r\n\r\n WiFi-Module Firmware-Update: Press and release App-Button to start Udate\r\n");
      
@@ -241,11 +289,10 @@ namespace FezFeather_WiFi_Firmware_Update
            // { 75, 75, 75, 75 }), new IPAddress(new byte[] { 75, 75, 75, 76 }) };
 
             //networkInterfaceSetting.MacAddress = new byte[] { 0x00, 0x4, 0x00, 0x00, 0x00, 0x00 };
-            //networkInterfaceSetting.MacAddress = new byte[] { 0x4A, 0x28, 0x05, 0x2A, 0xA4, 0x0F };
+            networkInterfaceSetting.MacAddress = new byte[] { 0x4A, 0x28, 0x05, 0x2A, 0xA4, 0x0F };
 
             networkInterfaceSetting.DhcpEnable = true;
-            networkInterfaceSetting.DhcpEnable = true;
-
+            
             networkInterfaceSetting.TlsEntropy = new byte[] { 1, 2, 3, 4 };
 
             networkController.SetInterfaceSettings(networkInterfaceSetting);
