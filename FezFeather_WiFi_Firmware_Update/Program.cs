@@ -180,8 +180,8 @@ namespace FezFeather_WiFi_Firmware_Update
                 string theUrl = "http://192.168.1.24:8000/m2m_ota_3a0.bin";
 
                 bool success = false;
-                success = GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.Winc15x0Interface.FirmwareUpdate(theUrl, ( 3 * 60 * 1000));  // 3 minutes
-
+                
+                success = GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.Winc15x0Interface.FirmwareUpdate(theUrl, new TimeSpan(0, 3, 0));  // 3 minutes
                 if (success)
                 {
                     Debug.WriteLine("Success");
